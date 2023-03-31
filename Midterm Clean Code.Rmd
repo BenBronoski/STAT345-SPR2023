@@ -79,35 +79,15 @@ a + transition_time(stats$yearSeason) + labs(title = 'Season: {closest_state}') 
 - Defenses are pushing players to take longer shots
 - More teams are willing to give up a dunk than try to defend down low
 
-Reading in and creating data for the Milwaukee Bucks:
+Exploratory data collection for 2018 for all teams in Atlantic Division
 ```{r}
-bucksstats2001 = teams_shots(teams = "Milwaukee Bucks", seasons = 2001) %>% select(yearSeason, typeEvent, locationX, locationY)
-bucksstats2002 = teams_shots(teams = "Milwaukee Bucks", seasons = 2002) %>% select(yearSeason, typeEvent, locationX, locationY)
-bucksstats2003 = teams_shots(teams = "Milwaukee Bucks", seasons = 2003) %>% select(yearSeason, typeEvent, locationX, locationY)
-bucksstats2004 = teams_shots(teams = "Milwaukee Bucks", seasons = 2004) %>% select(yearSeason, typeEvent, locationX, locationY)
-bucksstats2005 = teams_shots(teams = "Milwaukee Bucks", seasons = 2005) %>% select(yearSeason, typeEvent, locationX, locationY)
-bucksstats2006 = teams_shots(teams = "Milwaukee Bucks", seasons = 2006) %>% select(yearSeason, typeEvent, locationX, locationY)
-bucksstats2007 = teams_shots(teams = "Milwaukee Bucks", seasons = 2007) %>% select(yearSeason, typeEvent, locationX, locationY)
-bucksstats2008 = teams_shots(teams = "Milwaukee Bucks", seasons = 2008) %>% select(yearSeason, typeEvent, locationX, locationY)
-bucksstats2009 = teams_shots(teams = "Milwaukee Bucks", seasons = 2009) %>% select(yearSeason, typeEvent, locationX, locationY)
-bucksstats2010 = teams_shots(teams = "Milwaukee Bucks", seasons = 2010) %>% select(yearSeason, typeEvent, locationX, locationY)
-bucksstats2011 = teams_shots(teams = "Milwaukee Bucks", seasons = 2011) %>% select(yearSeason, typeEvent, locationX, locationY)
-bucksstats2012 = teams_shots(teams = "Milwaukee Bucks", seasons = 2012) %>% select(yearSeason, typeEvent, locationX, locationY)
-bucksstats2013 = teams_shots(teams = "Milwaukee Bucks", seasons = 2013) %>% select(yearSeason, typeEvent, locationX, locationY)
-bucksstats2014 = teams_shots(teams = "Milwaukee Bucks", seasons = 2014) %>% select(yearSeason, typeEvent, locationX, locationY)
-bucksstats2015 = teams_shots(teams = "Milwaukee Bucks", seasons = 2015) %>% select(yearSeason, typeEvent, locationX, locationY)
-bucksstats2016 = teams_shots(teams = "Milwaukee Bucks", seasons = 2016) %>% select(yearSeason, typeEvent, locationX, locationY)
-bucksstats2017 = teams_shots(teams = "Milwaukee Bucks", seasons = 2017) %>% select(yearSeason, typeEvent, locationX, locationY)
-bucksstats2018 = teams_shots(teams = "Milwaukee Bucks", seasons = 2018) %>% select(yearSeason, typeEvent, locationX, locationY)
-bucksstats2019 = teams_shots(teams = "Milwaukee Bucks", seasons = 2019) %>% select(yearSeason, typeEvent, locationX, locationY)
-bucksstats2020 = teams_shots(teams = "Milwaukee Bucks", seasons = 2020) %>% select(yearSeason, typeEvent, locationX, locationY)
-
-bucks_totals = bind_rows(bucksstats2001, bucksstats2002,bucksstats2003, bucksstats2004, bucksstats2005, bucksstats2006, bucksstats2007, bucksstats2008, bucksstats2009, bucksstats2010, bucksstats2011, bucksstats2012, bucksstats2013, bucksstats2014, bucksstats2015, bucksstats2016, bucksstats2017, bucksstats2018, bucksstats2019, bucksstats2020)
+some_nba_data = teams_shots(teams = c("Toronto Raptors", "Boston Celtics", "Brooklyn Nets", "Philadelphia 76er's", "New York KNicks"))
 ```
 
-
-Exploratory graph comparing Bucks and Raptors shot selection:
+Comparing the made and missed shots between the teams and their distances
 ```{r}
-
+ggplot(data = some_nba_data, aes(some_nba_data$distanceShot, some_nba_data$nameTeam, color = some_nba_data$typeEvent)) + geom_boxplot() + labs(color = "Shot Outcome", title = "Shot Outcome Comparison for Atlantic Division") + xlab("Shot Distance (in Feet)") + ylab("Team Name")
 ```
+
+This boxplot shows that most made shots fall very close to the net whereas missed shots can come from anywhere. The mean missed shot distance is also much further away than the mean made shot distance.
 
