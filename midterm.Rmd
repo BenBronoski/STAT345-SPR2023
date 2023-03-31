@@ -140,7 +140,7 @@ a + transition_time(stats$yearSeason) + transition_states(stats$yearSeason, tran
 
 Exploratory data collection for 2018 for all teams in Atlantic Division
 ```{r}
-some_nba_data = teams_shots(teams = c("Toronto Raptors", "Boston Celtics", "Brooklyn Nets", "Philadelphia 76er's", "New York KNicks"))
+some_nba_data = teams_shots(teams = c("Toronto Raptors", "Boston Celtics", "Brooklyn Nets", "Philadelphia 76ers", "New York KNicks"))
 ```
 
 Comparing the made and missed shots between the teams and their distances
