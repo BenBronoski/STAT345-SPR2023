@@ -1,0 +1,91 @@
+---
+title: "Toronto Rapters Shot Chart From 2000-2020"
+author: "Ben Bronoski"
+date: "`r Sys.Date()`"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r, include=FALSE}
+library(tidyverse)
+library(ggimage)
+library(ggpubr)
+library(png)
+library(gganimate)
+library(ggplot2)
+
+stats = read.csv("Totals.csv")
+
+#Filtered Y axis data to only include shots that were taken from the baseline to halfcourt. Some years have data with missed, full court shots that skewed some graphs
+stats = stats %>% filter(stats$locationY<300)
+bball = readPNG("Halfcourt.png")
+```
+
+
+## Beginning of the Century
+
+- Very diverse shot taking
+- Emphasis on taking shot that was designed
+
+```{r, warning=FALSE}
+stats2001 = subset(stats, stats$yearSeason == 2001)
+ggplot(data = stats2001, aes(stats2001$locationX, stats2001$locationY, color = stats2001$typeEvent)) +background_image(bball) + geom_point() + scale_color_manual(values = c("Made Shot" = "Red", "Missed Shot" = "Black")) + labs(color = "Shot Outcome", x = NULL, y = NULL) + scale_x_discrete(labels = NULL, breaks = NULL) + scale_y_discrete(labels = NULL, breaks = NULL) + ggtitle("Shot Chart for 1999-2000")
+```
+
+
+## Late 2000's to Early 2010's
+
+- Mid range shooting becomes slightly more prominent
+- Large amount of shots still taken within a system
+
+```{r}
+stats2005 = subset(stats, stats$yearSeason == 2005)
+ggplot(data = stats2005, aes(stats2005$locationX, stats2005$locationY, color = stats2005$typeEvent)) +background_image(bball) + geom_point() + scale_color_manual(values = c("Made Shot" = "Red", "Missed Shot" = "Black")) + labs(color = "Shot Outcome", x = NULL, y = NULL) + scale_x_discrete(labels = NULL, breaks = NULL) + scale_y_discrete(labels = NULL, breaks = NULL) + ggtitle("Shot Chart for 2004-2005")
+```
+
+
+## Late 2000's to Early 2010's cont.
+
+- Clear shot taking patterns are starting to emerge between the post and 3-point line
+
+```{r, warning=FALSE}
+stats2010 = subset(stats, stats$yearSeason == 2010)
+ggplot(data = stats2010, aes(stats2010$locationX, stats2010$locationY, color = stats2010$typeEvent)) +background_image(bball) + geom_point() + scale_color_manual(values = c("Made Shot" = "Red", "Missed Shot" = "Black")) + labs(color = "Shot Outcome", x = NULL, y = NULL) + scale_x_discrete(labels = NULL, breaks = NULL) + scale_y_discrete(labels = NULL, breaks = NULL) + ggtitle("Shot Chart for 2004-2005")
+```
+
+## Late 2010's to 2020
+
+- Start to see the true emergence of the 3-point shot
+- Iso ball begins to take shape as shots are focused either in the post or 3-point range
+
+```{r, warning=FALSE}
+stats2015 = subset(stats, stats$yearSeason == 2015)
+ggplot(data = stats2015, aes(stats2015$locationX, stats2015$locationY, color = stats2015$typeEvent)) +background_image(bball) + geom_point() + scale_color_manual(values = c("Made Shot" = "Red", "Missed Shot" = "Black")) + labs(color = "Shot Outcome", x = NULL, y = NULL) + scale_x_discrete(labels = NULL, breaks = NULL) + scale_y_discrete(labels = NULL, breaks = NULL) + ggtitle("Shot Chart for 2014-2015")
+```
+
+## Late 2010's to 2020 cont.
+
+- 3-point shot completely takes over
+- Almost all shots are dunks or 3-pointers
+
+```{r, warning=FALSE}
+stats2020 = subset(stats, stats$yearSeason == 2020)
+ggplot(data = stats2020, aes(stats2020$locationX, stats2020$locationY, color = stats2020$typeEvent)) +background_image(bball) + geom_point() + scale_color_manual(values = c("Made Shot" = "Red", "Missed Shot" = "Black")) + labs(color = "Shot Outcome", x = NULL, y = NULL) + scale_x_discrete(labels = NULL, breaks = NULL) + scale_y_discrete(labels = NULL, breaks = NULL) + ggtitle("Shot Chart for 2019-2020")
+```
+
+## Final Thoughts
+
+- The transition of shot selection over time shows players are getting better at longer range shots
+- Defenses are pushing players to take longer shots
+- More teams are willing to give up a dunk than try to defend down low
+
+## Extra Thoughts Overall
+
+- There is a huge emphasis on the 3-pointer because of guys like Steph Curry
+- Defenses are built to attempt to stop the 3 but as the graphs show, the players are just learning to shoot from further and further away
+- Most of the shots taken around the rim are due to transition dunks, or tip ins
+- This data does not count shots taken from the free throw line, only field goals
+- It would be interesting to see if a defense could be built to trick guys into stepping forward across the 3-point line to attempt more long 2's since those seem to be missed a fair amount
