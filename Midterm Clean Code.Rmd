@@ -1,0 +1,113 @@
+---
+title: "Clean Code File"
+author: "Ben Bronoski"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Libraries:
+```{r}
+library(tidyverse)
+library(ggimage)
+library(ggpubr)
+library(png)
+library(gganimate)
+library(ggplot2)
+```
+
+Create Data Frame and write to csv:
+```{r, eval=FALSE}
+#In my panic of losing my data I deleted the original loop. This should be correct though
+#When creating the data frame for the Bucks data I did the process manually which is at the bottom of this file
+seasons = c(2000:2020)
+stats = NULL
+totals = NULL
+for (x in 2000:2020){
+  stats = teams_shots(teams = "Toronto Raptors", seasons = seasons)
+  totals = bind_rows(stats)
+  totals = data.frame(totals)
+}
+
+write.csv(totals, file = "C:\\Users\\benbr\\OneDrive\\Desktop\\UWL UNDERGRAD\\SPRING 2023\\STAT 345\\Projects\\Totals.csv")
+```
+
+As more analysis was done over the course of several days, it became more necessary to write the data to a csv to save time. Initial run time was approximately 10 minutes. Csv read in is instantaneous.
+
+Read data back in, normalize data, read in background image:
+```{r}
+stats = read.csv("Totals.csv")
+
+#Filtered Y axis data to only include shots that were taken from the baseline to halfcourt. Some years have data with missed, full court shots that skewed some graphs
+stats = stats %>% filter(stats$locationY<300)
+bball = readPNG("Halfcourt.png")
+```
+
+Several years had shots that were taken from as far away as the opposite baseline so those points had to be removed in order for the data to show evenly on the graphs over the years. The number that filters the data represents the Y axis approximation of half court. There was no need to filter shots taken in negative Y values because those only seemed to hover within 1 or 2 of the x-axis. No X values had to be filtered since all of them fell within the regular dimensions of the court.
+
+Create graphs year by year:
+```{r}
+#subsets of data were created outside of ggplot after multiple attempts to include them in the ggplot failed
+#Purpose is to show how shot selection differs from year to year without having too many graphics
+
+stats2001 = subset(stats, stats$yearSeason == 2001)
+ggplot(data = stats2001, aes(stats2001$locationX, stats2001$locationY, color = stats2001$typeEvent)) +background_image(bball) + geom_point() + scale_color_manual(values = c("Made Shot" = "Red", "Missed Shot" = "Black")) + labs(color = "Shot Outcome", x = NULL, y = NULL) + scale_x_discrete(labels = NULL, breaks = NULL) + scale_y_discrete(labels = NULL, breaks = NULL) + ggtitle("Shot Chart for 1999-2000")
+stats2005 = subset(stats, stats$yearSeason == 2005)
+ggplot(data = stats2005, aes(stats2005$locationX, stats2005$locationY, color = stats2005$typeEvent)) +background_image(bball) + geom_point() + scale_color_manual(values = c("Made Shot" = "Red", "Missed Shot" = "Black")) + labs(color = "Shot Outcome", x = NULL, y = NULL) + scale_x_discrete(labels = NULL, breaks = NULL) + scale_y_discrete(labels = NULL, breaks = NULL) + ggtitle("Shot Chart for 2004-2005")
+stats2010 = subset(stats, stats$yearSeason == 2010)
+ggplot(data = stats2010, aes(stats2010$locationX, stats2010$locationY, color = stats2010$typeEvent)) +background_image(bball) + geom_point() + scale_color_manual(values = c("Made Shot" = "Red", "Missed Shot" = "Black")) + labs(color = "Shot Outcome", x = NULL, y = NULL) + scale_x_discrete(labels = NULL, breaks = NULL) + scale_y_discrete(labels = NULL, breaks = NULL) + ggtitle("Shot Chart for 2009-2010")
+stats2015 = subset(stats, stats$yearSeason == 2015)
+ggplot(data = stats2015, aes(stats2015$locationX, stats2015$locationY, color = stats2015$typeEvent)) +background_image(bball) + geom_point() + scale_color_manual(values = c("Made Shot" = "Red", "Missed Shot" = "Black")) + labs(color = "Shot Outcome", x = NULL, y = NULL) + scale_x_discrete(labels = NULL, breaks = NULL) + scale_y_discrete(labels = NULL, breaks = NULL) + ggtitle("Shot Chart for 2014-2015")
+stats2020 = subset(stats, stats$yearSeason == 2020)
+ggplot(data = stats2020, aes(stats2020$locationX, stats2020$locationY, color = stats2020$typeEvent)) +background_image(bball) + geom_point() + scale_color_manual(values = c("Made Shot" = "Red", "Missed Shot" = "Black")) + labs(color = "Shot Outcome", x = NULL, y = NULL) + scale_x_discrete(labels = NULL, breaks = NULL) + scale_y_discrete(labels = NULL, breaks = NULL) + ggtitle("Shot Chart for 2019-2020")
+```
+
+Early years shows shots were spread evenly. Middle years showed a slight resurgence of mid-range shooting. Recent years show massive up-ticks of shots around the basket and 3-point shots.
+
+Animation:
+```{r}
+#Easy to digest animation of shot selection year over year
+
+a = ggplot(data = stats, aes(stats$locationX, stats$locationY, color = stats$typeEvent)) + background_image(bball) + geom_point() + scale_color_manual(values = c("Made Shot" = "Red", "Missed Shot" = "Black")) + labs(color = "Shot Outcome", x = NULL, y = NULL) + scale_x_discrete(labels = NULL, breaks = NULL) + scale_y_discrete(labels = NULL, breaks = NULL)
+a + transition_time(stats$yearSeason) + labs(title = 'Season: {closest_state}') + transition_states(stats$yearSeason, transition_length = 2, state_length = 1, wrap = TRUE)
+```
+
+- The transition of shot selection over time shows players are getting better at longer range shots
+- Defenses are pushing players to take longer shots
+- More teams are willing to give up a dunk than try to defend down low
+
+Reading in and creating data for the Milwaukee Bucks:
+```{r}
+bucksstats2001 = teams_shots(teams = "Milwaukee Bucks", seasons = 2001) %>% select(yearSeason, typeEvent, locationX, locationY)
+bucksstats2002 = teams_shots(teams = "Milwaukee Bucks", seasons = 2002) %>% select(yearSeason, typeEvent, locationX, locationY)
+bucksstats2003 = teams_shots(teams = "Milwaukee Bucks", seasons = 2003) %>% select(yearSeason, typeEvent, locationX, locationY)
+bucksstats2004 = teams_shots(teams = "Milwaukee Bucks", seasons = 2004) %>% select(yearSeason, typeEvent, locationX, locationY)
+bucksstats2005 = teams_shots(teams = "Milwaukee Bucks", seasons = 2005) %>% select(yearSeason, typeEvent, locationX, locationY)
+bucksstats2006 = teams_shots(teams = "Milwaukee Bucks", seasons = 2006) %>% select(yearSeason, typeEvent, locationX, locationY)
+bucksstats2007 = teams_shots(teams = "Milwaukee Bucks", seasons = 2007) %>% select(yearSeason, typeEvent, locationX, locationY)
+bucksstats2008 = teams_shots(teams = "Milwaukee Bucks", seasons = 2008) %>% select(yearSeason, typeEvent, locationX, locationY)
+bucksstats2009 = teams_shots(teams = "Milwaukee Bucks", seasons = 2009) %>% select(yearSeason, typeEvent, locationX, locationY)
+bucksstats2010 = teams_shots(teams = "Milwaukee Bucks", seasons = 2010) %>% select(yearSeason, typeEvent, locationX, locationY)
+bucksstats2011 = teams_shots(teams = "Milwaukee Bucks", seasons = 2011) %>% select(yearSeason, typeEvent, locationX, locationY)
+bucksstats2012 = teams_shots(teams = "Milwaukee Bucks", seasons = 2012) %>% select(yearSeason, typeEvent, locationX, locationY)
+bucksstats2013 = teams_shots(teams = "Milwaukee Bucks", seasons = 2013) %>% select(yearSeason, typeEvent, locationX, locationY)
+bucksstats2014 = teams_shots(teams = "Milwaukee Bucks", seasons = 2014) %>% select(yearSeason, typeEvent, locationX, locationY)
+bucksstats2015 = teams_shots(teams = "Milwaukee Bucks", seasons = 2015) %>% select(yearSeason, typeEvent, locationX, locationY)
+bucksstats2016 = teams_shots(teams = "Milwaukee Bucks", seasons = 2016) %>% select(yearSeason, typeEvent, locationX, locationY)
+bucksstats2017 = teams_shots(teams = "Milwaukee Bucks", seasons = 2017) %>% select(yearSeason, typeEvent, locationX, locationY)
+bucksstats2018 = teams_shots(teams = "Milwaukee Bucks", seasons = 2018) %>% select(yearSeason, typeEvent, locationX, locationY)
+bucksstats2019 = teams_shots(teams = "Milwaukee Bucks", seasons = 2019) %>% select(yearSeason, typeEvent, locationX, locationY)
+bucksstats2020 = teams_shots(teams = "Milwaukee Bucks", seasons = 2020) %>% select(yearSeason, typeEvent, locationX, locationY)
+
+bucks_totals = bind_rows(bucksstats2001, bucksstats2002,bucksstats2003, bucksstats2004, bucksstats2005, bucksstats2006, bucksstats2007, bucksstats2008, bucksstats2009, bucksstats2010, bucksstats2011, bucksstats2012, bucksstats2013, bucksstats2014, bucksstats2015, bucksstats2016, bucksstats2017, bucksstats2018, bucksstats2019, bucksstats2020)
+```
+
+
+Exploratory graph comparing Bucks and Raptors shot selection:
+```{r}
+
+```
+

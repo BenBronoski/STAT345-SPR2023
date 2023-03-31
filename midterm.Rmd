@@ -1,0 +1,160 @@
+---
+title: "STAT 345 Midterm Project"
+font: 12pt
+date: "Due March 31"
+output:
+  pdf_document: default
+  word_document: default
+  html_document: default
+---
+
+> "Our offense is like the Pythagorean Theorem. There is no answer!", _Shaquille O'Neal_
+
+
+## The Background
+
+Your role for the midterm project is that of data analyst intern at an NBA (professional basketball) team. Your direct supervisor (also part of the analytics team) has asked you to create a data visualization to illustrate how (or if) the team's shots have changed over time. After some initial clarifying questions, your supervisor confessed that they had seen some pretty cool shot charts at http://savvastjortjoglou.com/nba-shot-sharts.html and would like to extend the ideas a bit. 
+
+Your data for the midterm project may come from a variety of sources, including the NBA directly, as well as Basketball-Reference, HoopsHype, and others. There are several ways to access the data, but perhaps the simplest is through the `nbastatR` package, which serves as a wrapper (or set of helper functions) for these various data sources. There is a lot of potentially useful information that can be found using this package; unfortunately, the documentation is somewhat inconsistent. For example, the documentation at https://www.rdocumentation.org/packages/nbastatR/versions/0.1.110202031 is pretty well-formatted and easy to navigate, but the current function names have changed a bit (see `?nbastatR` and click "Index"). (If you use the nbastatR package, you'll want to install the package using the following code. There are other packages with this type of data, though.)
+
+```
+library(devtools)
+devtools::install_github("abresler/nbastatR")
+```
+```{r}
+library(tidyverse)
+```
+
+```{r}
+library(devtools)
+devtools::install_github("abresler/nbastatR")
+```
+
+```{r, message=FALSE}
+library(nbastatR)
+?nbastatR
+```
+
+```{r}
+Sys.setenv("VROOM_CONNECTION_SIZE" = 131072 * 2)
+#seasons = c(2000:2020)
+#stats = NULL
+#totals = NULL
+#for (x in 2000:2020){
+#  stats = teams_shots(teams = "Toronto Raptors", seasons = seasons)
+#  totals = bind_rows(stats)
+#  return(totals)
+#}
+
+stats2001 = teams_shots(teams = "Toronto Raptors", seasons = 2001) %>% select(yearSeason, typeEvent, locationX, locationY)
+stats2002 = teams_shots(teams = "Toronto Raptors", seasons = 2002) %>% select(yearSeason, typeEvent, locationX, locationY)
+stats2003 = teams_shots(teams = "Toronto Raptors", seasons = 2003) %>% select(yearSeason, typeEvent, locationX, locationY)
+stats2004 = teams_shots(teams = "Toronto Raptors", seasons = 2004) %>% select(yearSeason, typeEvent, locationX, locationY)
+stats2005 = teams_shots(teams = "Toronto Raptors", seasons = 2005) %>% select(yearSeason, typeEvent, locationX, locationY)
+stats2006 = teams_shots(teams = "Toronto Raptors", seasons = 2006) %>% select(yearSeason, typeEvent, locationX, locationY)
+stats2007 = teams_shots(teams = "Toronto Raptors", seasons = 2007) %>% select(yearSeason, typeEvent, locationX, locationY)
+stats2008 = teams_shots(teams = "Toronto Raptors", seasons = 2008) %>% select(yearSeason, typeEvent, locationX, locationY)
+stats2009 = teams_shots(teams = "Toronto Raptors", seasons = 2009) %>% select(yearSeason, typeEvent, locationX, locationY)
+stats2010 = teams_shots(teams = "Toronto Raptors", seasons = 2010) %>% select(yearSeason, typeEvent, locationX, locationY)
+stats2011 = teams_shots(teams = "Toronto Raptors", seasons = 2011) %>% select(yearSeason, typeEvent, locationX, locationY)
+stats2012 = teams_shots(teams = "Toronto Raptors", seasons = 2012) %>% select(yearSeason, typeEvent, locationX, locationY)
+stats2013 = teams_shots(teams = "Toronto Raptors", seasons = 2013) %>% select(yearSeason, typeEvent, locationX, locationY)
+stats2014 = teams_shots(teams = "Toronto Raptors", seasons = 2014) %>% select(yearSeason, typeEvent, locationX, locationY)
+stats2015 = teams_shots(teams = "Toronto Raptors", seasons = 2015) %>% select(yearSeason, typeEvent, locationX, locationY)
+stats2016 = teams_shots(teams = "Toronto Raptors", seasons = 2016) %>% select(yearSeason, typeEvent, locationX, locationY)
+stats2017 = teams_shots(teams = "Toronto Raptors", seasons = 2017) %>% select(yearSeason, typeEvent, locationX, locationY)
+stats2018 = teams_shots(teams = "Toronto Raptors", seasons = 2018) %>% select(yearSeason, typeEvent, locationX, locationY)
+stats2019 = teams_shots(teams = "Toronto Raptors", seasons = 2019) %>% select(yearSeason, typeEvent, locationX, locationY)
+stats2020 = teams_shots(teams = "Toronto Raptors", seasons = 2020) %>% select(yearSeason, typeEvent, locationX, locationY)
+```
+
+```{r}
+totals = data.frame(bind_rows(stats2001,stats2002,stats2003,stats2004,stats2005,stats2006,stats2007,stats2008,stats2009,stats2010,stats2011,stats2012,stats2013,stats2014,stats2015,stats2016,stats2017,stats2018,stats2019,stats2020))
+#write.csv(totals, file = "C:\\Users\\benbr\\OneDrive\\Desktop\\UWL UNDERGRAD\\SPRING 2023\\STAT 345\\Projects\\Totals.csv")
+```
+
+
+## The Tasks
+
+1. (30 points) Produce a graphic displaying the shot locations for a particular team over several years. Some notes:
+
+   - Colors should be chosen to reflect the team, if possible.
+   - There are likely many overlaid points -- handle this by either binning these by location, or use opacity.
+   - Incorporate information about whether the shot was made or not (shape, color, etc.).
+   - The graphic should be well-labeled, titled, etc.
+   - Start with a graph for a single year, then extend to several years. Up to 20 years of shot data is available. Either facet these by year or animate using the years.
+   - You'll want to figure out what the coordinates mean somehow. This might be through the documentation, but could also be determined using aspects of the data itself and the dimensions of an NBA court.
+    - If possible, try to put a basketball court on the background of the image (you'll need to scale it appropriately).
+```{r}
+library(tidyverse)
+library(ggimage)
+library(ggpubr)
+library(png)
+library(gganimate)
+stats = read.csv("Totals.csv")
+stats = stats %>% filter(stats$locationY<300)
+bball = readPNG("Halfcourt.png")
+stats2001 = subset(stats, stats$yearSeason == 2001)
+ggplot(data = stats2001, aes(stats2001$locationX, stats2001$locationY, color = stats2001$typeEvent)) +background_image(bball) + geom_point() + scale_color_manual(values = c("Made Shot" = "Red", "Missed Shot" = "Black")) + labs(color = "Shot Outcome", x = NULL, y = NULL) + scale_x_discrete(labels = NULL, breaks = NULL) + scale_y_discrete(labels = NULL, breaks = NULL)
+stats2005 = subset(stats, stats$yearSeason == 2005)
+ggplot(data = stats2005, aes(stats2005$locationX, stats2005$locationY, color = stats2005$typeEvent)) +background_image(bball) + geom_point() + scale_color_manual(values = c("Made Shot" = "Red", "Missed Shot" = "Black")) + labs(color = "Shot Outcome", x = NULL, y = NULL) + scale_x_discrete(labels = NULL, breaks = NULL) + scale_y_discrete(labels = NULL, breaks = NULL)
+stats2010 = subset(stats, stats$yearSeason == 2010)
+ggplot(data = stats2010, aes(stats2010$locationX, stats2010$locationY, color = stats2010$typeEvent)) +background_image(bball) + geom_point() + scale_color_manual(values = c("Made Shot" = "Red", "Missed Shot" = "Black")) + labs(color = "Shot Outcome", x = NULL, y = NULL) + scale_x_discrete(labels = NULL, breaks = NULL) + scale_y_discrete(labels = NULL, breaks = NULL)
+stats2015 = subset(stats, stats$yearSeason == 2015)
+ggplot(data = stats2015, aes(stats2015$locationX, stats2015$locationY, color = stats2015$typeEvent)) +background_image(bball) + geom_point() + scale_color_manual(values = c("Made Shot" = "Red", "Missed Shot" = "Black")) + labs(color = "Shot Outcome", x = NULL, y = NULL) + scale_x_discrete(labels = NULL, breaks = NULL) + scale_y_discrete(labels = NULL, breaks = NULL)
+stats2020 = subset(stats, stats$yearSeason == 2020)
+ggplot(data = stats2020, aes(stats2020$locationX, stats2020$locationY, color = stats2020$typeEvent)) +background_image(bball) + geom_point() + scale_color_manual(values = c("Made Shot" = "Red", "Missed Shot" = "Black")) + labs(color = "Shot Outcome", x = NULL, y = NULL) + scale_x_discrete(labels = NULL, breaks = NULL) + scale_y_discrete(labels = NULL, breaks = NULL)
+#ggplot(subset(stats, stats$yearSeason == 2001), aes(stats$locationX, stats$locationY))
+```
+
+Animation!!
+```{r}
+a = ggplot(data = stats, aes(stats$locationX, stats$locationY, color = stats$typeEvent)) + background_image(bball) + geom_point() + scale_color_manual(values = c("Made Shot" = "Red", "Missed Shot" = "Black")) + xlab("Baseline") + ylab("Sideline") + theme(axis.ticks.x = element_blank(), axis.ticks.y = element_blank()) + labs(color = "Shot Outcome", title = 'Season: {closest_state}')
+a + transition_time(stats$yearSeason) + transition_states(stats$yearSeason, transition_length = 20, state_length = 5, wrap = TRUE)
+```
+
+   
+2. (30 points) Summarize the graphic/series of graphics into a digestible, bullet-point brief report for front-office staff. Some notes:
+
+   - The main body of the report should be very brief -- just the graphic(s) and the bullet-pointed list of findings, which should be short and clear.
+   - Include a more detailed explanation of these bullet points, for further reading by those interested. This section should follow the bullet-point section, but should be organized similarly for reference. 
+   - Your report to the front-office shouldn't include any code.
+   - This report should be generated using RMarkdown. However, the choice of output type (Word, PDF, or HTML) is up to you (you could even make slides if you want to). 
+   
+3. (30 points) Write and document clean, efficient, reproducible code. Some notes:
+
+   - This code will be viewed by your direct supervisor.
+   - The code file should include your code to gather, join, and clean the data; the code to generate the graphic(s) presented; and your commentary on the results (so, a single .rmd file, or an .rmd file that sources an .r file).
+   - Your code should be clean, organized, and reproducible. Remove unnecessary/scratch/exploratory code.
+   - Your code should be well commented. In particular, any decisions or judgement calls made in the analysis process should be explained/justified. Sections of code should be identified even if not functionalized (including purpose, data/argument inputs, analysis outputs).
+   
+4. (10 points) Above and Beyond. Explore the data a bit, and create a graphic that uses (or incorporates) different information than what was used above. Some notes:
+
+   - Create an additional graphic that incorporates at least one additional variable not previously used. The additional data should be drawn from a different dataset (function call) than the original graphic used. These two (or more) datasets may need to be joined appropriately.
+   - You can either add more information to the plot above, or create a different plot. 
+   - Formatting, labelling, etc. are all important here too.
+   - Adding marginal densities or other "bells and whistles" might offer additional insight.
+   - This graphic should be included at the end of the report (after the more detailed explanations). 
+   - You should include a brief description of the graphic (highlighting the different/additional information used).
+   
+
+```{r}
+some_nba_data = teams_shots(teams = c("Milwaukee Bucks", "Chicago Bulls", "Cleveland Cavaliers", "Indiana Pacers", "Detroit Pistons"))
+```
+
+```{r}
+ggplot(data = some_nba_data, aes(some_nba_data$distanceShot, some_nba_data$nameTeam, color = some_nba_data$typeEvent)) + geom_boxplot() + labs(color = "Shot Outcome", title = "Shot Outcome Comparison for Central Division") + xlab("Shot Distance (in Feet)") + ylab("Team Name")
+```
+
+
+  
+## The Deliverables
+
+1. Upload your report and code file(s) to GitHub by 11:59am (noon) on Friday, March 31.
+2. Submit (on Canvas) your report, code, and link to your GitHub repository by 11:59am (noon) on Friday, March 31.
+  
+  
+  
+  
+
+
