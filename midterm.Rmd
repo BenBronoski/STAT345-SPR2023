@@ -138,13 +138,17 @@ a + transition_time(stats$yearSeason) + transition_states(stats$yearSeason, tran
    - You should include a brief description of the graphic (highlighting the different/additional information used).
    
 
+Exploratory data collection for 2018 for all teams in Atlantic Division
 ```{r}
-some_nba_data = teams_shots(teams = c("Milwaukee Bucks", "Chicago Bulls", "Cleveland Cavaliers", "Indiana Pacers", "Detroit Pistons"))
+some_nba_data = teams_shots(teams = c("Toronto Raptors", "Boston Celtics", "Brooklyn Nets", "Philadelphia 76er's", "New York KNicks"))
 ```
 
+Comparing the made and missed shots between the teams and their distances
 ```{r}
-ggplot(data = some_nba_data, aes(some_nba_data$distanceShot, some_nba_data$nameTeam, color = some_nba_data$typeEvent)) + geom_boxplot() + labs(color = "Shot Outcome", title = "Shot Outcome Comparison for Central Division") + xlab("Shot Distance (in Feet)") + ylab("Team Name")
+ggplot(data = some_nba_data, aes(some_nba_data$distanceShot, some_nba_data$nameTeam, color = some_nba_data$typeEvent)) + geom_boxplot() + labs(color = "Shot Outcome", title = "Shot Outcome Comparison for Atlantic Division") + xlab("Shot Distance (in Feet)") + ylab("Team Name")
 ```
+
+This boxplot shows that most made shots fall very close to the net whereas missed shots can come from anywhere. The mean missed shot distance is also much further away than the mean made shot distance.
 
 
   
